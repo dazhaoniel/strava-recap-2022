@@ -1,6 +1,9 @@
 import gpxpy
 import pandas as pd
 
+from os import listdir
+from os.path import isfile, join
+
 
 def parse_activities(file):
 	f = open('./export_11620080/'+file)
@@ -20,6 +23,15 @@ def get_activity_coordinates():
 
 		df.to_pickle('./activities/activity_location_data_'+str(r[0])+'.pkl')
 
+def concat_dfs():
+	df = pd.DataFrame(columns=['latitude', 'longitude', 'elevation', 'activity_name'])
+	for f in listdir('./activities'):
+		if isfile(join('./activities', f)):
+			t = pd.read_pickle(join('./activities', f))
+			df = pd.concat([df, t], axis=0)
+	df.to_pickle('locations.pkl')
+
+
 
 if __name__ == '__main__':
-	get_activity_coordinates()
+	concat_dfs()
