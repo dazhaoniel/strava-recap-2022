@@ -9,3 +9,7 @@ Strava removed the yearly recap feature from free accounts, and I think it's a s
 source venv/bin/activate
 pip install -r requirements.txt
 ```
+
+### Resources
+
+[US States Cartographic Boundary](https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html)
