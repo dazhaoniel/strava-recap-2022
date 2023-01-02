@@ -16,17 +16,22 @@ def get_activity_coordinates():
 	a = pd.read_pickle('./activities.pkl')
 	for r in list(a.itertuples(index=False, name=None)):
 		n = str(r[1])
-		d = parse_activities(n)
-		for p in d[:1]:
+		if '.gpx' in n:
+			d = parse_activities(n)
+			p = d[0]
 			df.loc[len(df.index)] = [p.latitude, p.longitude, p.elevation, str(r[0])]
 
-		df.to_pickle('./activities/activity_location_data_'+str(r[0])+'.pkl')
+			df.to_pickle('./activities/activity_location_data_'+str(r[0])+'.pkl')
 
 def concat_dfs():
 	df = pd.DataFrame(columns=['latitude', 'longitude', 'elevation', 'activity_name'])
 	for f in listdir('./activities'):
 		if isfile(join('./activities', f)):
+			# try:
 			t = pd.read_pickle(join('./activities', f))
+			# except Exception:
+			# 	print(f)
+
 			df = pd.concat([df, t], axis=0)
 	df.to_pickle('locations.pkl')
 
