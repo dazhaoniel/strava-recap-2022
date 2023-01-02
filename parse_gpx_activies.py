@@ -27,6 +27,7 @@ def concat_dfs():
 	df = pd.DataFrame(columns=['latitude', 'longitude', 'elevation', 'activity_name'])
 	for f in listdir('./activities'):
 		if isfile(join('./activities', f)):
+			# sometimes .DS_Store is throwing an error
 			# try:
 			t = pd.read_pickle(join('./activities', f))
 			# except Exception:
