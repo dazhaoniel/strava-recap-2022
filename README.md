@@ -20,8 +20,8 @@ pip install -r requirements.txt
 # generate requirement file
 pip freeze > requirements.txt
 
-# Stop python virtual environment
-source venv/bin/deactivate
+# Leave virtual environment
+deactivate
 
 # Run script
 python parse_gpx_activities.py
