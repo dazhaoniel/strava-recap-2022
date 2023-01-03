@@ -4,12 +4,31 @@ Strava removed the yearly recap feature from free accounts, and I think it's a s
 
 ## Development
 
+Start Jupyter Notebook
+```
+jupyter notebook
+```
+
+Run script to convert .gpx (Strava) and .fit (Garmin) activties to dataframe
 ```python
 # Start python virtual environment
 source venv/bin/activate
+
+# Install requirements
 pip install -r requirements.txt
+
+# generate requirement file
+pip freeze > requirements.txt
+
+# Stop python virtual environment
+source venv/bin/deactivate
+
+# Run script
+python parse_gpx_activities.py
 ```
 
 ### Resources
 
 [US States Cartographic Boundary](https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html)
+
+[Parsing fitness tracker data with Python](https://towardsdatascience.com/parsing-fitness-tracker-data-with-python-a59e7dc17418)
