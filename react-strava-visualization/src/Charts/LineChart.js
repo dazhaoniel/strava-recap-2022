@@ -1,31 +1,40 @@
 import * as d3 from "d3";
+import { dsv } from "d3";
 import { useEffect, useState } from "react";
+
+const row = (d) => {
+  d.label = +d.label;
+  d.value = +d.value;
+  return d;
+};
 
 function LineChart(props) {
   const { width, height, csv } = props;
 
-  const [data, setData] = useState(null);
-
-  //   const data = d3.csv(csv, function (data) {
-  // console.log(data);
-  //   });
+  const [data, setData] = useState([]);
 
   useEffect(() => {
-    d3.csv(csv).then(setData);
-    // drawChart();
-  }, []);
+    if (data.length > 0) {
+      drawChart();
+    } else {
+      fetchData();
+    }
+  }, [data]);
 
-  //   console.log(data[0]);
+  const fetchData = async () => {
+    const chartData = await d3.csv(csv, row);
+    setData(chartData);
+  };
 
   const drawChart = () => {
     // establish margins
     const margin = { top: 10, right: 50, bottom: 50, left: 50 };
 
     // establish x and y max values
-    const yMinValue = d3.min(data, (d) => d.Distance);
-    const yMaxValue = d3.max(data, (d) => d.Distance);
-    const xMinValue = d3.min(data, (d) => d.Moving_Time);
-    const xMaxValue = d3.max(data, (d) => d.Moving_Time);
+    const yMinValue = d3.min(data, (d) => d.value);
+    const yMaxValue = d3.max(data, (d) => d.value);
+    const xMinValue = d3.min(data, (d) => d.label);
+    const xMaxValue = d3.max(data, (d) => d.label);
 
     // create chart area
     const svg = d3
