@@ -1,5 +1,4 @@
 import * as d3 from "d3";
-import { dsv } from "d3";
 import { useEffect, useState } from "react";
 
 const row = (d) => {
@@ -14,6 +13,7 @@ function LineChart(props) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    console.log("here");
     if (data.length > 0) {
       drawChart();
     } else {
