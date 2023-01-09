@@ -2,6 +2,8 @@
 
 Visualizing the same activity data with `D3` and `React`
 
+![](https://raw.githubusercontent.com/dazhaoniel/strava-recap-2022/main/react-strava-visualization/charts/histogram.png)
+
 ## Available Scripts
 
 In the project directory, you can run:
