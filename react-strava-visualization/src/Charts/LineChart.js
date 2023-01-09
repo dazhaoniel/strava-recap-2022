@@ -13,7 +13,6 @@ function LineChart(props) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    console.log("here");
     if (data.length > 0) {
       drawChart();
     } else {
