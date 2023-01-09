@@ -2,47 +2,34 @@ import * as d3 from "d3";
 import { useEffect, useState } from "react";
 
 function Histogram(props) {
-  const { width, height } = props;
+  const { width, height, csv } = props;
 
-  let jsonURL = "https://api.openbrewerydb.org/breweries";
-
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({});
 
   useEffect(() => {
     if (data.length > 0) {
       drawChart();
     } else {
-      getURLData();
+      fetchData();
     }
   }, [data]);
 
-  // fetchs json and converts to an array from a random API I found
-  // ex. [{state: 'Idaho', frequency: 1}]
-  const getURLData = async () => {
-    let urlResponse = await fetch(jsonURL);
-    let jsonResult = await urlResponse.json();
-
-    // build a dictionary to record the frequency of each state in the json response
-    let stateFreq = {};
-    jsonResult.forEach((element) => {
-      if (stateFreq[element.state] > 0) {
-        stateFreq[element.state] = stateFreq[element.state] + 1;
+  const fetchData = async () => {
+    let activityType = {};
+    const chartData = await d3.csv(csv, function (row) {
+      if (activityType[row.Activity_Type] > 0) {
+        activityType[row.Activity_Type] = activityType[row.Activity_Type] + 1;
       } else {
-        stateFreq[element.state] = 1;
+        activityType[row.Activity_Type] = 1;
       }
     });
 
     // convert the dictionary to an array
-    let stateFreqArray = Object.keys(stateFreq).map(function (key) {
-      return { state: key, frequency: stateFreq[key] };
+    let activityTypeArray = Object.keys(activityType).map(function (key) {
+      return { activity: key, frequency: activityType[key] };
     });
 
-    // sort the array by frequency and send it to the data variable
-    setData(
-      stateFreqArray.sort(function (a, b) {
-        return b.frequency - a.frequency;
-      })
-    );
+    setData(activityTypeArray);
   };
 
   const drawChart = () => {
@@ -62,7 +49,7 @@ function Histogram(props) {
     // create the x axis scale, scaled to the states
     const xScale = d3
       .scaleBand()
-      .domain(data.map((d) => d.state))
+      .domain(data.map((d) => d.activity))
       .rangeRound([margin.left, width - margin.right])
       .padding(0.1);
 
@@ -76,7 +63,7 @@ function Histogram(props) {
     const barColors = d3
       .scaleLinear()
       .domain([0, d3.max(data, (d) => d.frequency)])
-      .range(["blue", "red"]);
+      .range(["#69b3a2", "orange"]);
 
     // set the x axis on the bottom.
     // tilts the axis text so it's readable and not smushed.
@@ -106,7 +93,7 @@ function Histogram(props) {
       .data(data)
       .enter()
       .append("rect")
-      .attr("x", (d) => xScale(d.state))
+      .attr("x", (d) => xScale(d.activity))
       .attr("y", (d) => yScale(d.frequency))
       .attr("width", xScale.bandwidth())
       .attr("height", (d) => yScale(0) - yScale(d.frequency))
@@ -116,10 +103,15 @@ function Histogram(props) {
       .attr("fill", function (d) {
         return barColors(d.frequency);
       })
-      .attr("stroke", "black")
+      .attr("stroke", "grey")
       .attr("stroke-width", 1);
   };
-  return <div id="histogram"></div>;
+  return (
+    <div>
+      <h6>Activity Type Counts</h6>
+      <div id="histogram"></div>
+    </div>
+  );
 }
 
 export default Histogram;

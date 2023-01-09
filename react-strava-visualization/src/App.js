@@ -2,7 +2,7 @@ import "./App.css";
 import LineChart from "./Charts/LineChart";
 import Histogram from "./Charts/Histogram";
 import TimeSeries from "./Charts/TimeSeries";
-import data from "./daniel-activities.csv";
+import data from "./activities.csv";
 
 function App() {
   return (
