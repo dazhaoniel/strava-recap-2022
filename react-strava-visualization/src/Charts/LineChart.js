@@ -1,11 +1,11 @@
 import * as d3 from "d3";
 import { useEffect, useState } from "react";
 
-const row = (d) => {
-  d.label = +d.label;
-  d.value = +d.value;
-  return d;
-};
+// const row = (d) => {
+//   d.label = +d.label;
+//   d.value = +d.value;
+//   return d;
+// };
 
 function LineChart(props) {
   const { width, height, csv } = props;
@@ -21,7 +21,13 @@ function LineChart(props) {
   }, [data]);
 
   const fetchData = async () => {
-    const chartData = await d3.csv(csv, row);
+    let chartData = [];
+    await d3.csv(csv, function (d) {
+      chartData.push({
+        label: +d.label,
+        value: +d.value,
+      });
+    });
     setData(chartData);
   };
 

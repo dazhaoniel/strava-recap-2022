@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 function TimeSeries(props) {
   const { width, height, csv } = props;
 
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({});
 
   useEffect(() => {
     if (data.length > 0) {
@@ -15,19 +15,29 @@ function TimeSeries(props) {
   }, [data]);
 
   const fetchData = async () => {
-    let tempData = [];
+    let chartData = [];
     await d3.csv(
       csv,
       () => {},
       function (d) {
-        //console.log(d);
-        tempData.push({
-          date: d3.timeParse("%Y-%m-%d")(d.date),
-          value: parseFloat(d.value),
-        });
+        const date = d3.timeParse("%Y-%m-%d")(d.Activity_Date);
+        const month = date.toLocaleString("default", { month: "long" });
+
+        if (chartData[month] > 0) {
+          chartData[month] += 1;
+        } else {
+          chartData[month] = 1;
+        }
       }
     );
-    setData(tempData);
+
+    // convert the dictionary to an array
+    let chartDataArray = Object.keys(chartData).map(function (key) {
+      return { month: key, value: chartData[key] };
+    });
+    console.log(chartDataArray);
+
+    setData(chartDataArray);
   };
 
   const drawChart = () => {
@@ -40,22 +50,24 @@ function TimeSeries(props) {
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+      .attr("transform", `translate(${margin.left},0)`);
 
-    // Add X axis --> it is a date format
+    // Add X axis --> it is a month text
     var x = d3
-      .scaleTime()
-      .domain(
-        d3.extent(data, function (d) {
-          return d.date;
-        })
-      )
-      .range([0, width]);
+      .scaleBand()
+      .domain(data.map((d) => d.month))
+      .rangeRound([0, width - margin.right])
+      .padding(0.1);
 
     svg
       .append("g")
       .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
+      .call(d3.axisBottom(x))
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .attr("transform", "rotate(-65)");
 
     // Add Y axis
     var y = d3
@@ -73,7 +85,7 @@ function TimeSeries(props) {
     const line = d3
       .line()
       .x(function (d) {
-        return x(d.date);
+        return x(d.month);
       })
       .y(function (d) {
         return y(d.value);
@@ -89,7 +101,12 @@ function TimeSeries(props) {
       .attr("d", line);
   };
 
-  return <div id="time_series"></div>;
+  return (
+    <div>
+      <h6>Number of Activities Per Month</h6>
+      <div id="time_series"></div>
+    </div>
+  );
 }
 
 export default TimeSeries;

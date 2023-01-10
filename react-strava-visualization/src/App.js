@@ -7,7 +7,7 @@ import data from "./activities.csv";
 function App() {
   return (
     <div className="row">
-      <LineChart height={400} width={400} csv={data} />
+      {/* <LineChart height={400} width={400} csv={data} /> */}
       <TimeSeries height={400} width={400} csv={data} />
       <Histogram height={400} width={400} csv={data} />
     </div>
