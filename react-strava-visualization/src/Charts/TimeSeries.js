@@ -35,7 +35,6 @@ function TimeSeries(props) {
     let chartDataArray = Object.keys(chartData).map(function (key) {
       return { month: key, value: chartData[key] };
     });
-    console.log(chartDataArray);
 
     setData(chartDataArray);
   };
