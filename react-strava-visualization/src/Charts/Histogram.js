@@ -16,7 +16,7 @@ function Histogram(props) {
 
   const fetchData = async () => {
     let activityType = {};
-    const chartData = await d3.csv(csv, function (row) {
+    await d3.csv(csv, function (row) {
       if (activityType[row.Activity_Type] > 0) {
         activityType[row.Activity_Type] = activityType[row.Activity_Type] + 1;
       } else {
